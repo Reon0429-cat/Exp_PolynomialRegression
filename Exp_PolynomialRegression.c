@@ -18,7 +18,7 @@ int dataNum; // データ数
 int patients[1000]; // 新規感染者数
 int day[1000]; // 日
 
-#define DIMENSION    1 // 多項式の次元
+#define DIMENSION    9 // 多項式の次元
 
 double w[DIMENSION+1]; // 学習パラメータ
 double estimation; // 予測値
@@ -86,9 +86,11 @@ void draw_callback(GtkWidget *widget, cairo_t *cr)
         cairo_arc (cr, Origin[0]+num*lineWidth, Origin[1]-estimation/15, 1.0, 0.0, 2.0*3.14);
         cairo_stroke (cr);
     }
+    
 }
 
-int readCSV () {
+int readCSV ()
+{
     FILE *fp;
     int cnt;
     int i, j;
@@ -184,58 +186,28 @@ void compPolynomialRegression () {
         }
         val_w[i][DIMENSION+1] = w[i];
     }
-    // val_w
-    // |583     170236    373613   |
-    // |170236  66221804  167002993|
     
-    // 2-1.対角を1にする
-    double a00 = val_w[0][0];
-    for (int j=0; j<=DIMENSION+1; j++) {
-        val_w[0][j] /= a00;
+    for (int p=0; p<=DIMENSION; p++) {
+        double a_pp = val_w[p][p];
+        for (int i=p; i<=DIMENSION+1; i++) {
+            val_w[p][i] /= a_pp;
+        }
+        for (int i=0; i<=DIMENSION; i++) {
+            if (i!=p) {
+                double a_ip = val_w[i][p];
+                for (int j=p; j<=DIMENSION+1; j++) {
+                    val_w[i][j] = val_w[i][j] - a_ip * val_w[p][j];
+                }
+            }
+        }
     }
-    
-    // val_w
-    // |1       292       640.845626|
-    // |176236  66221804  167002993 |
-    
-    // 2-2.対角以外の列を0にする
-    // 0行目以外
-    double a10 = val_w[1][0];
-    for (int j=0; j<=DIMENSION+1; j++) {
-        val_w[1][j] -= a10 * val_w[0][j];
-    }
-    
-    // val_w
-    // |1 292      640.845626|
-    // |0 16512892 57907997  |
-    
-    
-    double a11 = val_w[1][1];
-    for (int j=0; j<=DIMENSION+1; j++) {
-        val_w[1][j] /= a11;
-    }
-    
-    // val_w
-    // |1 292 640.845626|
-    // |0 1   3.506836  |
-    
-    // 1行目以外
-    double a01 = val_w[0][1];
-    for (int j=0; j<=DIMENSION+1; j++) {
-        val_w[0][j] -= a01 * val_w[1][j];
-    }
-    
-    // val_w
-    // |1 0 -383.150360|
-    // |0 1   3.506836 |
-    // w0: -383.150360
-    // w1: 3.506836
     
     // 出力
 //    for (int i=0; i<=DIMENSION; i++) {
 //        for (int j=0; j<=DIMENSION+1; j++) {
 //            printf("%f\n", val_w[i][j]);
 //        }
+//        printf("------------------\n");
 //    }
     
     for (int i=0; i<=DIMENSION; i++) {
