@@ -232,13 +232,15 @@ void compPolynomialRegression () {
     // w1: 3.506836
     
     // 出力
+//    for (int i=0; i<=DIMENSION; i++) {
+//        for (int j=0; j<=DIMENSION+1; j++) {
+//            printf("%f\n", val_w[i][j]);
+//        }
+//    }
+    
     for (int i=0; i<=DIMENSION; i++) {
-        for (int j=0; j<=DIMENSION+1; j++) {
-            printf("%f\n", val_w[i][j]);
-        }
+        w[i] = val_w[i][DIMENSION+1];
     }
-    
-    
     
 }
 
