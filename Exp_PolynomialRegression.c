@@ -165,11 +165,17 @@ void compPolynomialRegression () {
     }
     
       // 1-2.拡大係数行列の右端の値(学習パラメータ)
+    for (int j=0; j<=DIMENSION; j++) {
+        double bij = 0;
+        for (int k=1; k<=dataNum; k++) {
+            double xk = day[k];
+            double yk = patients[k];
+            bij += pow(xk, (double)(j)) * yk;
+        }
+        w[j] = bij;
+    }
     
-    
-    
-    
-    
+
     
     // 2.掃き出し法を用いて連立方程式を解く
       // 2-1.対角を1にする
