@@ -195,23 +195,41 @@ void compPolynomialRegression () {
     }
     
     // val_w
-    // |1       292       640      |
-    // |176236  66221804  167002993|
+    // |1       292       640.845626|
+    // |176236  66221804  167002993 |
     
     // 2-2.対角以外の列を0にする
-    for (int i=1; i<=DIMENSION; i++) {
-        double ai0 = val_w[i][0];
-        for (int j=0; j<=DIMENSION+1; j++) {
-            val_w[i][j] -= ai0 * val_w[0][j];
-        }
+    // 0行目以外
+    double a10 = val_w[1][0];
+    for (int j=0; j<=DIMENSION+1; j++) {
+        val_w[1][j] -= a10 * val_w[0][j];
     }
     
     // val_w
     // |1 292      640.845626|
     // |0 16512892 57907997  |
     
-
     
+    double a11 = val_w[1][1];
+    for (int j=0; j<=DIMENSION+1; j++) {
+        val_w[1][j] /= a11;
+    }
+    
+    // val_w
+    // |1 292 640.845626|
+    // |0 1   3.506836  |
+    
+    // 1行目以外
+    double a01 = val_w[0][1];
+    for (int j=0; j<=DIMENSION+1; j++) {
+        val_w[0][j] -= a01 * val_w[1][j];
+    }
+    
+    // val_w
+    // |1 0 -383.150360|
+    // |0 1   3.506836 |
+    // w0: -383.150360
+    // w1: 3.506836
     
     // 出力
     for (int i=0; i<=DIMENSION; i++) {
@@ -219,6 +237,8 @@ void compPolynomialRegression () {
             printf("%f\n", val_w[i][j]);
         }
     }
+    
+    
     
 }
 
