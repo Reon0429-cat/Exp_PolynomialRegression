@@ -17,9 +17,9 @@ char *oName = "patients_per_date210923.csv";
 int dataNum; // データ数
 int patients[1000]; // 新規感染者数
 int day[1000]; // 日
- 
+
 #define DIMENSION    1 // 多項式の次元
- 
+
 double w[DIMENSION+1]; // 学習パラメータ
 double estimation; // 予測値
 
@@ -152,8 +152,8 @@ int readCSV () {
 void compPolynomialRegression () {
     
     // 1.行列の要素を求め、代入
-      // 1-1.拡大係数行列の正方行列
-    int val[DIMENSION+1][DIMENSION+1];
+    // 1-1.拡大係数行列の正方行列
+    double val[DIMENSION+1][DIMENSION+1];
     for (int i=0; i<=DIMENSION; i++) {
         for (int j=0; j<=DIMENSION; j++) {
             double aij = 0;
@@ -164,7 +164,7 @@ void compPolynomialRegression () {
         }
     }
     
-      // 1-2.拡大係数行列の右端の値(学習パラメータ)
+    // 1-2.拡大係数行列の右端の値(学習パラメータ)
     for (int j=0; j<=DIMENSION; j++) {
         double bij = 0;
         for (int k=1; k<=dataNum; k++) {
@@ -175,17 +175,40 @@ void compPolynomialRegression () {
         w[j] = bij;
     }
     
-
     
     // 2.掃き出し法を用いて連立方程式を解く
-      // 2-1.対角を1にする
+    double val_w[DIMENSION+1][DIMENSION+2]; // valとwを合わせた行列
+    for (int i=0; i<=DIMENSION; i++) {
+        for (int j=0; j<=DIMENSION; j++) {
+            val_w[i][j] = val[i][j];
+        }
+        val_w[i][DIMENSION+1] = w[i];
+    }
+    // val_w
+    // |583     176236    373613   |
+    // |176236  66221804  167002993|
+    
+    // 2-1.対角を1にする
+    double a00 = val_w[0][0];
+    for (int j=0; j<=DIMENSION+1; j++) {
+        val_w[0][j] /= a00;
+    }
+    
+    // 2-2.対角以外の列を0にする
+    for (int i=1; i<=DIMENSION; i++) {
+        
+    }
     
     
     
     
-      // 2-2.対角以外の列を0にする
     
-    
+    // 出力
+    for (int i=0; i<=DIMENSION; i++) {
+        for (int j=0; j<=DIMENSION+1; j++) {
+            printf("%f\n", val_w[i][j]);
+        }
+    }
     
 }
 
